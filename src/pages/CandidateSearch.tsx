@@ -1,94 +1,82 @@
-import { useState, useEffect } from 'react';
-import { searchGithubUser } from '../api/API';
-
-// Define the interface for candidate data
-interface Candidate {
-  name: string;
-  login: string;
-  location: string;
-  avatar_url: string;
-  email: string | null;
-  html_url: string;
-  company: string | null;
-}
+import { useState, useEffect } from "react";
+import { searchGithub, searchGithubUser } from "../api/API";
 
 const CandidateSearch = () => {
-  const [candidate, setCandidate] = useState<Candidate | null>(null);
-  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  interface Candidate {
+    id: number;
+    login: string;
+    avatar_url: string;
+    name?: string;
+    location?: string;
+    company?: string;
+  }
 
-  // Fetch a candidate from GitHub API
-  const fetchCandidate = async () => {
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchCandidates = async () => {
+    setLoading(true);
+    setError("");
     try {
-      setLoading(true);
-      setError(null);
-
-      const userData = await searchGithubUser("John Doe");
-      setCandidate(userData);
+      const data = await searchGithub();
+      setCandidates(data);
     } catch (err) {
-      setError('Failed to fetch candidate. Please try again.');
+      setError("Failed to fetch candidates. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const userData = await searchGithubUser(searchTerm);
+      if (Object.keys(userData).length === 0) {
+        setError("No user found. Please try another username.");
+      } else {
+        setCandidates([userData]);
+      }
+    } catch (err) {
+      setError("Failed to fetch user data. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCandidate();
+    fetchCandidates();
   }, []);
-
-  // Save candidate to localStorage
-  const saveCandidate = () => {
-    if (candidate) {
-      const updatedCandidates = [...savedCandidates, candidate];
-      setSavedCandidates(updatedCandidates);
-      localStorage.setItem('savedCandidates', JSON.stringify(updatedCandidates));
-      fetchCandidate();
-    }
-  };
-
-  // Skip candidate and fetch the next one
-  const skipCandidate = () => {
-    fetchCandidate();
-  };
-
-  // Load saved candidates from localStorage on initial render
-  useEffect(() => {
-    const saved = localStorage.getItem('savedCandidates');
-    if (saved) {
-      setSavedCandidates(JSON.parse(saved));
-    }
-  }, []);
-
-  if (loading) return <p>Loading candidate data...</p>;
-  if (error) return <p>{error}</p>;
-  if (!candidate) return <p>No more candidates available.</p>;
 
   return (
-    <div className="candidate-container">
+    <div>
       <h1>Candidate Search</h1>
-      <div className="candidate-card">
-        <img
-          src={candidate.avatar_url}
-          alt={`${candidate.name}'s avatar`}
-          className="candidate-avatar"
+      <div>
+        <input
+          type="text"
+          placeholder="Search by username..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <div className="candidate-details">
-          <h2>{candidate.name || 'N/A'}</h2>
-          <p><strong>Username:</strong> {candidate.login}</p>
-          <p><strong>Location:</strong> {candidate.location || 'N/A'}</p>
-          <p><strong>Email:</strong> {candidate.email || 'N/A'}</p>
-          <p><strong>Company:</strong> {candidate.company || 'N/A'}</p>
-          <p>
-            <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
-              View GitHub Profile
-            </a>
-          </p>
-        </div>
-        <div className="candidate-buttons">
-          <button onClick={saveCandidate} className="accept">+</button>
-          <button onClick={skipCandidate} className="reject">-</button>
-        </div>
+        <button onClick={handleSearch}>Search</button>
+      </div>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="candidates-list">
+        {candidates.map((candidate) => (
+          <div key={candidate.id} className="candidate-card">
+            <img src={candidate.avatar_url} alt={candidate.login} />
+            <h3>{candidate.login}</h3>
+            <p>Name: {candidate.name || "N/A"}</p>
+            <p>Location: {candidate.location || "N/A"}</p>
+            <p>Company: {candidate.company || "N/A"}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
