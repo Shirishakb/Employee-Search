@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "login": "john_doe",
+      "avatar_url": "https://via.placeholder.com/50",
+      "name": "John Doe",
+      "location": "New York, USA",
+      "email": "john@example.com",
+      "company": "TechCorp",
+      "html_url": "https://github.com/john_doe"
+    },
+    {
+      "id": 2,
+      "login": "jane_smith",
+      "avatar_url": "https://via.placeholder.com/50",
+      "name": "Jane Smith",
+      "location": "San Francisco, USA",
+      "email": "jane@example.com",
+      "company": "InnovateX",
+      "html_url": "https://github.com/jane_smith"
+    },
+    {
+      "id": 3,
+      "login": "mark_jones",
+      "avatar_url": "https://via.placeholder.com/50",
+      "name": "Mark Jones",
+      "location": "London, UK",
+      "email": "mark@example.com",
+      "company": "DevSolutions",
+      "html_url": "https://github.com/mark_jones"
+    }
+  ]
+  
