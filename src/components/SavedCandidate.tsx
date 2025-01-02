@@ -1,16 +1,30 @@
 import { useState, useEffect } from 'react';
 import type { Candidate } from '../interfaces/Candidate.interface';
+import initialCandidates from '../data/candidates.json';
 
-// Define the interface for Candidate
+// Import candidate avatars directly
+import image1 from '../../src/assets/image1.jpeg';
+import image2 from '../../src/assets/image2.jpeg';
+import image3 from '../../src/assets/image3.jpeg';
+
+// Map avatars to candidate usernames
+const avatarMap: Record<string, string> = {
+  john_doe: image1,
+  jane_smith: image2,
+  mark_jones: image3,
+};
 
 const SavedCandidates = () => {
   const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
 
-  // Load saved candidates from localStorage
+  // Load saved candidates from localStorage or use initial data
   useEffect(() => {
     const saved = localStorage.getItem('savedCandidates');
     if (saved) {
       setSavedCandidates(JSON.parse(saved));
+    } else {
+      localStorage.setItem('savedCandidates', JSON.stringify(initialCandidates));
+      setSavedCandidates(initialCandidates);
     }
   }, []);
 
@@ -45,8 +59,8 @@ const SavedCandidates = () => {
               <tr key={candidate.login}>
                 <td>
                   <img
-                    src={candidate.avatar_url}
-                    alt={candidate.name}
+                    src={candidate.login ? avatarMap[candidate.login] : ''}
+                    alt={candidate.name || 'N/A'}
                     className="candidate-avatar-small"
                   />
                 </td>
@@ -57,7 +71,7 @@ const SavedCandidates = () => {
                 <td>{candidate.company || 'N/A'}</td>
                 <td>
                   <a
-                    href={candidate.html_url}
+                    href={candidate.html_url || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
