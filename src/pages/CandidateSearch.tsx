@@ -1,84 +1,69 @@
-import { useState, useEffect } from "react";
-import { searchGithub, searchGithubUser } from "../api/API";
+import { useState, useEffect } from 'react';
+
+import { searchGithub, searchGithubUser } from '../api/API';
+import CandidateCard from '../components/CandidateCard';
+import type { Candidate } from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
-  interface Candidate {
-    id: number;
-    login: string;
-    avatar_url: string;
-    name?: string;
-    location?: string;
-    company?: string;
-  }
+  const [results, setResults] = useState<Candidate[]>([]);
+  const [currentUser, setCurrentUser] = useState<Candidate>({
+    id: null,
+    login: null,
+    email: null,
+    html_url: null,
+    name: null,
+    bio: null,
+    company: null,
+    location: null,
+    avatar_url: null,
+  });
+    const [currentIdx, setCurrentIdx] = useState<number>(0);
 
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchForSpecificUser = async (user: string) => {
+    const data: Candidate = await searchGithubUser(user);
 
-  const fetchCandidates = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await searchGithub();
-      setCandidates(data);
-    } catch (err) {
-      setError("Failed to fetch candidates. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setCurrentUser(data);
   };
 
-  const handleSearch = async () => {
-    if (!searchTerm.trim()) {
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const userData = await searchGithubUser(searchTerm);
-      if (Object.keys(userData).length === 0) {
-        setError("No user found. Please try another username.");
-      } else {
-        setCandidates([userData]);
+  const searchForUsers = async () => {
+    const data: Candidate[] = await searchGithub();
+
+    setResults(data);
+
+    await searchForSpecificUser(data[currentIdx].login || '');
+  };
+
+  const makeDecision = async (isSelected: boolean) => {
+    if (isSelected) {
+      let parsedCandidates: Candidate[] = [];
+      const savedCandidates = localStorage.getItem('savedCandidates');
+      if (typeof savedCandidates === 'string') {
+        parsedCandidates = JSON.parse(savedCandidates);
       }
-    } catch (err) {
-      setError("Failed to fetch user data. Please try again.");
-    } finally {
-      setLoading(false);
+      parsedCandidates.push(currentUser);
+      localStorage.setItem('savedCandidates', JSON.stringify(parsedCandidates));
+    }
+    if (currentIdx + 1 < results.length) {
+      setCurrentIdx(currentIdx + 1);
+      await searchForSpecificUser(results[currentIdx + 1].login || '');
+    } else {
+      setCurrentIdx(0);
+      await searchForUsers();
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Dependency array is correct
   useEffect(() => {
-    fetchCandidates();
+    searchForUsers();
+    searchForSpecificUser(currentUser.login || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div>
+    <>
       <h1>Candidate Search</h1>
-      <div>
-        <input
-          type="text"
-          placeholder="Search by username..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="candidates-list">
-        {candidates.map((candidate) => (
-          <div key={candidate.id} className="candidate-card">
-            <img src={candidate.avatar_url} alt={candidate.login} />
-            <h3>{candidate.login}</h3>
-            <p>Name: {candidate.name || "N/A"}</p>
-            <p>Location: {candidate.location || "N/A"}</p>
-            <p>Company: {candidate.company || "N/A"}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+      <CandidateCard currentUser={currentUser} makeDecision={makeDecision} />
+    </>
   );
 };
 
