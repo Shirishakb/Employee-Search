@@ -2,32 +2,36 @@
     {
       "id": 1,
       "login": "john_doe",
-      "avatar_url": "https://via.placeholder.com/50",
+      "avatar_url": "",
       "name": "John Doe",
       "location": "New York, USA",
       "email": "john@example.com",
       "company": "TechCorp",
-      "html_url": "https://github.com/john_doe"
+      "html_url": "image1.jpg",
+      "bio": "Software Engineer with 10 years of experience."
+
     },
     {
       "id": 2,
       "login": "jane_smith",
-      "avatar_url": "https://via.placeholder.com/50",
+      "avatar_url": "image2.jpg",
       "name": "Jane Smith",
       "location": "San Francisco, USA",
       "email": "jane@example.com",
       "company": "InnovateX",
-      "html_url": "https://github.com/jane_smith"
+      "html_url": "https://github.com/jane_smith",
+        "bio": "Full Stack Developer with 5 years of experience."
     },
     {
       "id": 3,
       "login": "mark_jones",
-      "avatar_url": "https://via.placeholder.com/50",
+      "avatar_url": "image3.jpg",
       "name": "Mark Jones",
       "location": "London, UK",
       "email": "mark@example.com",
       "company": "DevSolutions",
-      "html_url": "https://github.com/mark_jones"
+      "html_url": "https://github.com/mark_jones",
+        "bio": "Frontend Developer with 3 years of experience."
     }
-  ]
+]
   
