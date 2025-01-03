@@ -1,35 +1,32 @@
 import { useEffect, useState } from 'react';
 import SavedCandidate from './SavedCandidate';
-import type { Candidate } from '../interfaces/Candidate.interface';
+import { Candidate } from '../interfaces/Candidate.interface';
 
-// Map over the savedCandidates array in local storage and render a SavedCandidate card for each candidate.
 const SavedCandidateList = () => {
-  const [potentialCandidates, setPotentialCandidates] = useState<Candidate[]>(
-    []
-  );
+  const [potentialCandidates, setPotentialCandidates] = useState<Candidate[]>([]);
 
   useEffect(() => {
     const savedCandidates = localStorage.getItem('savedCandidates');
-    let candidates: Candidate[] = [];
-    if (typeof savedCandidates === 'string') {
-      candidates = JSON.parse(savedCandidates);
+    if (savedCandidates) {
+      setPotentialCandidates(JSON.parse(savedCandidates));
     }
-    setPotentialCandidates(candidates);
   }, []);
+
   const rejectCandidate = (id: number) => {
-    let parsedCandidates: Candidate[] = [];
+    // Fetch the saved candidates from localStorage
     const savedCandidates = localStorage.getItem('savedCandidates');
-    if (typeof savedCandidates === 'string') {
-      parsedCandidates = JSON.parse(savedCandidates);
+    if (savedCandidates) {
+      const parsedCandidates: Candidate[] = JSON.parse(savedCandidates);
+      const updatedCandidates = parsedCandidates.filter((candidate) => candidate.id !== id);
+      
+      // Save the updated list back to localStorage
+      localStorage.setItem('savedCandidates', JSON.stringify(updatedCandidates));
+      setPotentialCandidates(updatedCandidates); // Update the state
     }
-    parsedCandidates = parsedCandidates.filter(
-      (person: Candidate) => person.id !== id
-    );
-    localStorage.setItem('savedCandidates', JSON.stringify(parsedCandidates));
-    setPotentialCandidates(parsedCandidates);
   };
+
   return (
-    <table className='table'>
+    <table className="table">
       <thead>
         <tr>
           <th>Image</th>
@@ -44,7 +41,7 @@ const SavedCandidateList = () => {
       <tbody>
         {potentialCandidates.map((candidate) => (
           <SavedCandidate
-            key={candidate.id}
+            key={candidate.id} // Ensure unique key
             candidate={candidate}
             rejectCandidate={rejectCandidate}
           />
