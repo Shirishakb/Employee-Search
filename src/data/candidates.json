@@ -1,0 +1,58 @@
+[
+    {
+      "id": 1,
+      "login": "john_doe",
+      "name": "John Doe",
+      "location": "New York, USA",
+      "email": "john@example.com",
+      "company": "Tech Solutions",
+      "bio": "Senior Developer at Tech Solutions",
+      "avatar_url": "/assets/image1.jpeg",
+      "html_url": "https://github.com/john_doe"
+    },
+    {
+      "id": 2,
+      "login": "jane_smith",
+      "name": "Jane Smith",
+      "location": "San Francisco, USA",
+      "email": "jane@example.com",
+      "company": "Innovate Inc.",
+      "bio": "Product Manager at Innovate Inc.",
+      "avatar_url": "/assets/image2.jpeg",
+      "html_url": "https://github.com/jane_smith"
+    },
+    {
+      "id": 3,
+      "login": "mark_jones",
+      "name": "Mark Jones",
+      "location": "London, UK",
+      "email": "mark@example.com",
+      "company": "Creative Labs",
+      "bio": "UI/UX Designer at Creative Labs",
+      "avatar_url": "/assets/image3.jpeg",
+      "html_url": "https://github.com/mark_jones"
+    },
+    {
+      "id": 4,
+      "login": "alice_brown",
+      "name": "Alice Brown",
+      "location": "Berlin, Germany",
+      "email": "alice@example.com",
+      "company": "DataTech",
+      "bio": "Data Scientist at DataTech",
+      "avatar_url": "/assets/image4.jpeg",
+      "html_url": "https://github.com/alice_brown"
+    },
+    {
+      "id": 5,
+      "login": "tom_white",
+      "name": "Tom White",
+      "location": "Toronto, Canada",
+      "email": "tom@example.com",
+      "company": "Cybernetics Ltd.",
+      "bio": "Cybersecurity Analyst at Cybernetics Ltd.",
+      "avatar_url": "/assets/image5.jpeg",
+      "html_url": "https://github.com/tom_white"
+    }
+  ]
+  
