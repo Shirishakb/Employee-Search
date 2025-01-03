@@ -23,15 +23,30 @@ const CandidateSearch = () => {
   };
 
   if (currentIndex >= candidates.length) {
-    return <h2>No more candidates available.</h2>;
+    return (
+      <div className="no-candidates-container">
+        <h2>No more candidates available.</h2>
+      </div>
+    );
   }
 
   return (
-    <CandidateCard
-      candidate={candidates[currentIndex]}
-      onAccept={handleAccept}
-      onReject={handleReject}
-    />
+    <div className="candidate-search-container">
+      <h2 className="candidate-search-title">Candidate Search</h2> {/* Title in bold */}
+
+      {/* Candidate Card */}
+      <CandidateCard
+        candidate={candidates[currentIndex]}
+        onAccept={handleAccept}
+        onReject={handleReject}
+      />
+
+      {/* Accept and Reject Buttons (outside the card) */}
+      <div className="candidate-search-actions">
+        <button className="accept-btn" onClick={handleAccept}>+</button>
+        <button className="reject-btn" onClick={handleReject}>−</button>
+      </div>
+    </div>
   );
 };
 
